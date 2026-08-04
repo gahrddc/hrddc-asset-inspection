@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#1d4ed8">
+  <title>ตรวจครุภัณฑ์ประจำปี</title>
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif;color:#17233b;background:#f3f6fb}
+    *{box-sizing:border-box}body{margin:0}.hero{padding:28px 20px;color:#fff;background:linear-gradient(135deg,#173b70,#2563eb)}
+    .hero h1{margin:0 0 4px;font-size:clamp(25px,6vw,36px)}.hero p{margin:0;opacity:.9}.wrap{width:min(760px,100%);margin:auto;padding:18px}
+    .card{background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 10px 28px #173b7013}.hidden{display:none!important}
+    label{display:block;font-weight:750;margin:0 0 7px}.field{margin-bottom:16px}input,textarea{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:14px;font:inherit;background:#fff}
+    textarea{min-height:82px;resize:vertical}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:14px;padding:14px 18px;font:inherit;font-weight:800;cursor:pointer}
+    .primary{background:#2563eb;color:#fff}.secondary{background:#eaf0fb;color:#173b70}.success{background:#15803d;color:#fff}.btn:disabled{opacity:.45}.msg{padding:13px 15px;border-radius:13px;background:#eef4ff;margin-top:12px}.msg.error{background:#fee2e2;color:#991b1b}
+    #reader{margin-top:14px;border-radius:16px;overflow:hidden}#reader button{padding:11px 14px;border:0;border-radius:10px;font:inherit;font-weight:700}#reader video{border-radius:14px}
+    .details{display:grid;grid-template-columns:130px 1fr;gap:9px 12px}.details dt{color:#64748b}.details dd{margin:0;font-weight:700;overflow-wrap:anywhere}.statuses{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .status{border:2px solid #dbe4f0;border-left:8px solid var(--c);background:#fff;border-radius:14px;padding:14px;text-align:left;font:inherit;font-weight:800}.status.selected{outline:3px solid #93c5fd;background:#eff6ff}
+    .loader{pointer-events:none}.loader:after{content:"กำลังดำเนินการ…";position:fixed;inset:auto 20px 24px;background:#17233b;color:#fff;padding:14px;border-radius:14px;text-align:center;z-index:10}
+    small{color:#64748b}@media(max-width:520px){.wrap{padding:12px}.card{padding:17px}.details{grid-template-columns:1fr}.details dt{margin-top:5px}.statuses{grid-template-columns:1fr}.btn{width:100%}}
+  </style>
+</head>
+<body>
+  <header class="hero"><h1>ตรวจครุภัณฑ์ประจำปี</h1><p>สแกน QR และบันทึกผลผ่านโทรศัพท์</p></header>
+  <main class="wrap">
+    <section class="card">
+      <div class="field"><label for="inspector">ชื่อผู้ตรวจ *</label><input id="inspector" autocomplete="name" placeholder="ชื่อ–นามสกุล"></div>
+      <div id="roundMsg" class="msg">กำลังตรวจสอบรอบตรวจ…</div>
+    </section>
+    <section class="card">
+      <div class="actions"><button class="btn primary" id="scanBtn">📷 สแกน QR ครุภัณฑ์</button><button class="btn secondary" id="stopBtn" hidden>หยุดสแกน</button></div>
+      <div id="reader" class="hidden"></div>
+      <div class="field" style="margin-top:18px"><label for="query">หรือกรอก ID / เลขครุภัณฑ์</label><input id="query" placeholder="เช่น 1 หรือ 0402-001-0001"></div>
+      <button class="btn secondary" id="findBtn">ค้นหา</button>
+    </section>
+    <section id="assetCard" class="card hidden">
+      <h2>ข้อมูลครุภัณฑ์</h2><dl class="details">
+        <dt>เลขครุภัณฑ์</dt><dd id="assetNo">-</dd><dt>รายการ</dt><dd id="assetName">-</dd><dt>ประเภท</dt><dd id="assetType">-</dd>
+        <dt>สถานะต้นฉบับ</dt><dd id="sourceStatus">-</dd><dt>ผู้ครอบครองปัจจุบัน</dt><dd id="oldCustodian">-</dd><dt>กลุ่ม</dt><dd id="oldGroup">-</dd>
+      </dl>
+      <h2>ผลการตรวจ</h2><div id="statuses" class="statuses"></div>
+      <div id="custodianFields" class="hidden" style="margin-top:16px"><div class="field"><label for="newCustodian">เปลี่ยนผู้ครอบครองเป็น</label><input id="newCustodian" placeholder="เว้นว่างหากไม่เปลี่ยน"></div><div class="field"><label for="newGroup">กลุ่มใหม่</label><input id="newGroup" placeholder="เว้นว่างหากไม่เปลี่ยน"></div></div>
+      <div class="field" style="margin-top:16px"><label for="note">หมายเหตุ</label><textarea id="note"></textarea></div>
+      <button class="btn success" id="saveBtn">บันทึกผลการตรวจ</button><div id="saveMsg" class="msg hidden"></div>
+    </section>
+  </main>
+  <script>
+    const API='https://script.google.com/macros/s/AKfycbxhL24fozA5cuxZTWmpm8qtCMlMSVJ2q1LoomGmOJ0h4vLfx3wi6rbYEmUbH3g_MOSyQg/exec';
+    const $=id=>document.getElementById(id);let cfg=null,asset=null,selected=null,scanner=null,rawQr='';
+    function msg(id,text,bad=false){const n=$(id);n.textContent=text;n.className='msg'+(bad?' error':'')}
+    function busy(on){document.body.classList.toggle('loader',on)}
+    function jsonp(params){return new Promise((resolve,reject)=>{const cb='__api'+Date.now()+Math.random().toString(36).slice(2);const s=document.createElement('script');const timer=setTimeout(()=>finish(new Error('เชื่อมต่อระบบหลังบ้านไม่สำเร็จ')),20000);function finish(err,data){clearTimeout(timer);delete window[cb];s.remove();err?reject(err):resolve(data)}window[cb]=data=>finish(null,data);s.onerror=()=>finish(new Error('โหลดข้อมูลไม่สำเร็จ'));s.src=API+'?'+new URLSearchParams({...params,callback:cb,_:Date.now()});document.head.appendChild(s)})}
+    async function api(params){const x=await jsonp(params);if(!x||x.ok===false)throw new Error(x&&x.error||'ระบบหลังบ้านตอบกลับไม่สำเร็จ');return x}
+    async function loadConfig(){try{cfg=await api({api:'config'});msg('roundMsg','รอบที่เปิด: '+cfg.round.name+' ('+cfg.round.start+' – '+cfg.round.end+')')}catch(e){msg('roundMsg',e.message,true)}}
+    function requireName(){if(!$('inspector').value.trim()){msg('roundMsg','กรุณากรอกชื่อผู้ตรวจก่อน',true);$('inspector').focus();return false}return true}
+    async function startScan(){if(!requireName())return;if(!window.Html5QrcodeScanner)return msg('roundMsg','กำลังโหลดเครื่องสแกน กรุณาลองอีกครั้ง',true);$('reader').classList.remove('hidden');$('stopBtn').hidden=false;$('reader').innerHTML='';scanner=new Html5QrcodeScanner('reader',{fps:10,qrbox:250,rememberLastUsedCamera:true},false);scanner.render(onScan,()=>{});$('reader').scrollIntoView({behavior:'smooth'})}
+    async function stopScan(){try{if(scanner)await scanner.clear()}catch(e){}scanner=null;$('reader').innerHTML='';$('reader').classList.add('hidden');$('stopBtn').hidden=true}
+    async function onScan(text){rawQr=text;$('query').value=text;await stopScan();findAsset()}
+    async function findAsset(){if(!requireName())return;const q=$('query').value.trim();if(!q)return msg('roundMsg','กรุณาสแกนหรือกรอกรหัสครุภัณฑ์',true);busy(true);try{const x=await api({api:'find',q});if(x.existing){asset=null;$('assetCard').classList.add('hidden');return msg('roundMsg','รายการนี้ตรวจแล้ว: '+x.existing.status+' โดย '+x.existing.inspector,true)}asset=x.asset;renderAsset();msg('roundMsg','พบข้อมูลครุภัณฑ์แล้ว')}catch(e){msg('roundMsg',e.message,true)}finally{busy(false)}}
+    function renderAsset(){$('assetCard').classList.remove('hidden');$('assetNo').textContent=asset.assetNo||'-';$('assetName').textContent=asset.name||'-';$('assetType').textContent=asset.type||'-';$('sourceStatus').textContent=asset.sourceStatus||'-';$('oldCustodian').textContent=asset.custodian||'-';$('oldGroup').textContent=asset.group||'-';selected=null;$('statuses').innerHTML='';cfg.statuses.forEach(s=>{const b=document.createElement('button');b.className='status';b.style.setProperty('--c',s.color);b.textContent=s.name;b.onclick=()=>selectStatus(s,b);$('statuses').appendChild(b)});$('assetCard').scrollIntoView({behavior:'smooth'})}
+    function selectStatus(s,b){selected=s;document.querySelectorAll('.status').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');$('custodianFields').classList.toggle('hidden',!s.allowCustodian)}
+    async function save(){if(!selected)return msg('saveMsg','กรุณาเลือกผลการตรวจ',true),$('saveMsg').classList.remove('hidden');if(selected.noteRequired&&!$('note').value.trim())return msg('saveMsg','สถานะนี้ต้องระบุหมายเหตุ',true),$('saveMsg').classList.remove('hidden');const p={accessCode:'',inspector:$('inspector').value.trim(),assetId:asset.id,assetNo:asset.assetNo,assetName:asset.name,oldCustodian:asset.custodian,oldGroup:asset.group,status:selected.code,newCustodian:$('newCustodian').value.trim(),newGroup:$('newGroup').value.trim(),note:$('note').value.trim(),qrRaw:rawQr||$('query').value.trim()};busy(true);try{const x=await api({api:'save',payload:JSON.stringify(p)});msg('roundMsg',x.message+' เวลา '+x.when);reset()}catch(e){$('saveMsg').classList.remove('hidden');msg('saveMsg',e.message,true)}finally{busy(false)}}
+    function reset(){asset=null;selected=null;rawQr='';$('assetCard').classList.add('hidden');$('query').value='';$('note').value='';$('newCustodian').value='';$('newGroup').value='';window.scrollTo({top:0,behavior:'smooth'})}
+    $('scanBtn').onclick=startScan;$('stopBtn').onclick=stopScan;$('findBtn').onclick=findAsset;$('saveBtn').onclick=save;$('query').addEventListener('keydown',e=>{if(e.key==='Enter')findAsset()});loadConfig();
+  </script>
+</body>
+</html>
