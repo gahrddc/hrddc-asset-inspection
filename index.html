@@ -27,6 +27,8 @@
   <style>
     @media(min-width:761px){.hero{width:100%;max-width:none;margin:0}.hero-main{width:min(1120px,100%);max-width:1120px;margin:0 auto}.wrap{width:min(1120px,100%);max-width:1120px;margin:0 auto}.card{width:100%}.tips{max-width:1064px}}
     .status b{display:block;margin-bottom:3px}.status small{display:block;color:#718096;font-size:12px;font-weight:500;line-height:1.35}.status>span:last-child{min-width:0}.status{align-items:flex-start}
+    .asset-card{padding:30px 32px}.asset-top{align-items:center;padding-bottom:18px;border-bottom:1px solid #e4eee8}.asset-top .section-head{margin:0}.asset-top .section-icon{width:52px;height:52px;background:linear-gradient(145deg,#45a86d,#087443);font-size:23px}.asset-badge{padding:9px 14px;border:1px solid #cce7d7;border-radius:999px;font-size:12px}.detail-panel{margin:18px 0 24px;padding:16px;border:1px solid #dbe8e0;border-radius:16px;background:#fff}.detail-panel-title{display:flex;align-items:center;gap:9px;margin:0 0 12px;color:#218253;font-size:16px;font-weight:900}.details{grid-template-columns:minmax(150px,.75fr) minmax(0,1fr);margin:0;border-color:#d9e3dd;border-radius:13px}.details dt,.details dd{display:flex!important;align-items:center;min-height:45px;padding:11px 15px}.details dt{background:#f6fbf8;color:#39785a;font-size:13px;font-weight:800}.details dd{background:#fff;color:#263548;font-size:14px;font-weight:650}.result-heading{display:flex;align-items:center;gap:9px;margin:0 0 14px;color:#18794a;font-size:17px}.result-heading:before{content:'☑';font-size:20px}.statuses{gap:11px 18px}.status{min-height:78px;padding:14px 16px;border:1px solid #d8e3dc;border-left:6px solid var(--c);border-radius:14px;background:#fff;box-shadow:0 2px 8px #0a5c3210;cursor:pointer}.status:hover{transform:translateY(-1px);border-color:var(--c);background:#fbfefc}.status.selected{border-color:var(--c);background:#f2fbf6;box-shadow:0 0 0 3px #0b8a4d18}.status-icon{flex:0 0 42px;width:42px;height:42px;border-radius:50%;background:color-mix(in srgb,var(--c) 11%,white);color:var(--c);font-size:20px}.status b{font-size:15px}.status small{font-size:12px}.conditional-field{margin-top:16px;padding:16px;border:1px solid #dce8e0;border-radius:14px;background:#f8fcfa}.asset-card .success{margin-top:4px;min-height:54px;font-size:16px}
+    @media(max-width:760px){.asset-card{padding:18px 15px}.asset-top{align-items:flex-start}.asset-top .section-icon{width:42px;height:42px}.asset-badge{padding:7px 10px}.detail-panel{padding:10px}.details{grid-template-columns:1fr}.details dt,.details dd{min-height:auto}.details dt{padding-bottom:4px}.details dd{padding-top:5px}.statuses{grid-template-columns:1fr}.status{min-height:72px}.result-heading{font-size:16px}}
   </style>
 </head>
 <body>
@@ -43,14 +45,15 @@
       <div class="search-grid"><div class="scan-zone"><div class="actions"><button class="btn primary" id="scanBtn">▦ สแกน QR ครุภัณฑ์</button><button class="btn secondary" id="stopBtn" hidden>หยุดสแกน</button></div><div class="scan-hint">ใช้กล้องเพื่ออ่าน QR เท่านั้น</div></div><div class="or-dot">หรือ</div><div class="manual-search"><div class="field"><label for="query">ID / เลขครุภัณฑ์</label><input id="query" inputmode="text" placeholder="เช่น 0402-001-0001"></div><button class="btn secondary" id="findBtn">⌕ ค้นหา</button></div></div>
       <div id="reader" class="hidden"></div>
     </section>
-    <section id="assetCard" class="card hidden">
-      <div class="asset-top"><div class="section-head" style="margin:0"><div class="section-icon">▣</div><div class="section-copy"><h2>ข้อมูลครุภัณฑ์</h2><p>ตรวจสอบข้อมูลก่อนบันทึกผล</p></div></div><span class="asset-badge">พบข้อมูล</span></div><dl class="details">
+    <section id="assetCard" class="card asset-card hidden">
+      <div class="asset-top"><div class="section-head" style="margin:0"><div class="section-icon">▣</div><div class="section-copy"><h2>ข้อมูลครุภัณฑ์</h2><p>ตรวจสอบข้อมูลก่อนบันทึกผล</p></div></div><span class="asset-badge">พบข้อมูล</span></div>
+      <div class="detail-panel"><div class="detail-panel-title">▤ รายละเอียดครุภัณฑ์</div><dl class="details">
         <dt>เลขครุภัณฑ์</dt><dd id="assetNo">-</dd><dt>รายการ</dt><dd id="assetName">-</dd><dt>ประเภท</dt><dd id="assetType">-</dd>
         <dt>สถานะต้นฉบับ</dt><dd id="sourceStatus">-</dd><dt>ผู้ครอบครองปัจจุบัน</dt><dd id="oldCustodian">-</dd><dt>กลุ่ม</dt><dd id="oldGroup">-</dd>
-      </dl>
-      <h3 class="subheading">ระบุสถานะครุภัณฑ์</h3><div id="statuses" class="statuses"></div>
-      <div id="custodianFields" class="hidden" style="margin-top:16px"><div class="field"><label for="newCustodian">ผู้ครอบครองใหม่ *</label><input id="newCustodian" placeholder="กรอกชื่อผู้ครอบครองใหม่"></div></div>
-      <div id="noteField" class="field hidden" style="margin-top:16px"><label for="note">สาเหตุที่ชำรุด *</label><textarea id="note" placeholder="ระบุอาการหรือสาเหตุที่ชำรุด"></textarea></div>
+      </dl></div>
+      <h3 class="result-heading">สถานะผลการตรวจ</h3><div id="statuses" class="statuses"></div>
+      <div id="custodianFields" class="conditional-field hidden"><div class="field" style="margin:0"><label for="newCustodian">ผู้ครอบครองใหม่ *</label><input id="newCustodian" placeholder="กรอกชื่อผู้ครอบครองใหม่"></div></div>
+      <div id="noteField" class="field conditional-field hidden"><label for="note">สาเหตุที่ชำรุด *</label><textarea id="note" placeholder="ระบุอาการหรือสาเหตุที่ชำรุด"></textarea></div>
       <button class="btn success" id="saveBtn">บันทึกผลการตรวจ</button><div id="saveMsg" class="msg hidden"></div>
     </section>
   </main>
