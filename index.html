@@ -72,7 +72,7 @@
     <section class="card inspector-card"><div class="section-head"><div class="section-icon">1</div><div class="section-copy"><h2>ระบุผู้ตรวจ</h2><p>กรอกชื่อผู้ดำเนินการตรวจในครั้งนี้</p></div></div>
       <div class="field"><label for="inspector">ชื่อผู้ตรวจ *</label><input id="inspector" autocomplete="name" placeholder="ชื่อ–นามสกุล"></div>
     </section>
-    <section class="card"><div class="section-head"><div class="section-icon">2</div><div class="section-copy"><h2>สแกนหรือค้นหาครุภัณฑ์</h2><p>เลือกวิธีที่สะดวกเพื่อค้นหารายการ</p></div></div>
+    <section class="card"><div class="section-head"><div class="section-icon">2</div><div class="section-copy"><h2>สแกนครุภัณฑ์</h2><p>สแกน QR Code จากป้ายครุภัณฑ์เพื่อเริ่มตรวจ</p></div></div>
       <div class="search-grid scan-only"><div class="scan-zone" id="scanZone"><div class="scan-card-title"><i data-lucide="qr-code"></i><span>สแกน QR ครุภัณฑ์</span></div><div id="scanPlaceholder" class="scan-placeholder"><div class="scan-target"><div><i data-lucide="scan-line"></i><b>สแกน QR Code ที่ป้ายครุภัณฑ์</b><span>วางกล้องให้อยู่ในกรอบ</span></div></div><button class="btn primary scan-open-btn" id="scanBtn"><i data-lucide="camera"></i><span>เปิดกล้องเพื่อสแกน</span></button></div><div id="scanStatus" class="msg scan-status hidden" role="status" aria-live="polite"></div><div id="reader" class="hidden"></div><button class="btn secondary" id="stopBtn" hidden>หยุดสแกน</button></div></div>
     </section>
     <section id="assetCard" class="card asset-card hidden">
@@ -88,7 +88,7 @@
     </section>
   </main>
   <div id="popup" class="popup hidden" role="status" aria-live="polite"><div class="popup-card"><div id="popupIcon" class="popup-icon">✓</div><div id="popupText" class="popup-text"></div><button id="popupRetry" class="popup-retry hidden" type="button">ลองใหม่</button></div></div>
-  <aside class="tips"><span class="tip-icon">i</span><div><b>คำแนะนำ</b><p>สแกน QR Code บนป้ายครุภัณฑ์ หรือกรอกเลขครุภัณฑ์เพื่อค้นหา และตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึกผล</p></div></aside>
+  <aside class="tips"><span class="tip-icon">i</span><div><b>คำแนะนำ</b><p>สแกน QR Code บนป้ายครุภัณฑ์ แล้วตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึกผล</p></div></aside>
   <footer><div><b>ตรวจสอบง่าย ครบถ้วน ถูกต้อง โปร่งใส</b><span>ระบบตรวจครุภัณฑ์ประจำปี</span></div><div><b>พบปัญหา ติดต่อ</b><span>กลุ่มบริหารทั่วไป 3040</span></div></footer>
   <script>
     const API='https://script.google.com/macros/s/AKfycbyrhOLGpEnzHcuXkAlYy5VjsjxSQtApEyQjI_O-BRwwL_gMi4nbCalEQz3CoTfHLrUf9g/exec';
