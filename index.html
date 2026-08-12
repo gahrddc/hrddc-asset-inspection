@@ -210,7 +210,7 @@
   <div id="popup" class="popup hidden" role="status" aria-live="polite"><div class="popup-card"><div id="popupIcon" class="popup-icon">✓</div><div id="popupText" class="popup-text"></div><button id="popupRetry" class="popup-retry hidden" type="button">ลองใหม่</button></div></div>
   <footer><div><b>ตรวจสอบง่าย ครบถ้วน ถูกต้อง โปร่งใส</b><span>ระบบตรวจครุภัณฑ์ประจำปี</span></div><div><b>พบปัญหา ติดต่อ</b><span>กลุ่มบริหารทั่วไป 3040</span></div></footer>
   <script>
-    const API='https://script.google.com/macros/s/AKfycbyrhOLGpEnzHcuXkAlYy5VjsjxSQtApEyQjI_O-BRwwL_gMi4nbCalEQz3CoTfHLrUf9g/exec';
+    const API='https://script.google.com/macros/s/AKfycbxhL24fozA5cuxZTWmpm8qtCMlMSVJ2q1LoomGmOJ0h4vLfx3wi6rbYEmUbH3g_MOSyQg/exec';
     const $=id=>document.getElementById(id);let cfg=null,asset=null,selected=null,scanner=null,rawQr='';
     function isConnectionError(error){const text=String(error&&error.message||error||'');return /Failed to fetch|NetworkError|timeout|Timeout|เชื่อมต่อระบบหลังบ้าน|โหลดข้อมูลไม่สำเร็จ|ระบบหลังบ้านตอบกลับไม่สำเร็จ/.test(text)}
     function thaiError(error){const text=String(error&&error.message||error||'');if(text.includes('ไม่พบครุภัณฑ์'))return text;if(text.includes("Cannot read properties")||text.includes('statuses'))return 'ยังโหลดข้อมูลรอบตรวจไม่สำเร็จ กรุณาลองใหม่อีกครั้ง';if(isConnectionError(error))return 'การเชื่อมต่ออินเทอร์เน็ตหรือระบบหลังบ้านขัดข้อง กรุณากดลองใหม่';return text||'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง'}
