@@ -1,0 +1,26 @@
+<section id="inspectPanel" class="hidden"><div class="page-heading"><div><p class="eyebrow">จัดการรอบตรวจ</p><h1>ตรวจครุภัณฑ์</h1><p>เปิด–ปิดรอบตรวจ ดูรายงาน และจัดการรอบตรวจทั้งหมด</p></div><button class="btn primary round-create-top" type="button" onclick="openRoundModal()"><span class="uiverse-create-text">สร้าง</span><span class="uiverse-create-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button></div>
+    <div id="roundCreateModal" class="photo-editor-modal hidden" onclick="if(event.target===this)closeRoundModal()"><div class="photo-editor-dialog round-create-dialog"><button class="photo-modal-close" type="button" onclick="closeRoundModal()" aria-label="ปิด">×</button><div class="section-title"><div class="step">＋</div><div><h2 id="roundModalTitle">สร้างรอบตรวจใหม่</h2><p id="roundModalSub">กรอกข้อมูลเพื่อสร้างรอบการตรวจครุภัณฑ์</p></div></div><div class="field"><label>ชื่อรอบ</label><input id="roundName" placeholder="ตรวจครุภัณฑ์ประจำปี 2569"></div><div class="row"><div class="field"><label>วันเริ่ม</label><input id="start" type="text" class="date-picker" placeholder="เลือกวันเริ่ม"></div><div class="field"><label>วันสิ้นสุด</label><input id="end" type="text" class="date-picker" placeholder="เลือกวันสิ้นสุด"></div></div><div class="row"><div class="field"><label>รหัสเข้ารอบ (ไม่บังคับ)</label><input id="roundCode" placeholder="กรอกรหัสเข้ารอบ"></div><div class="field"><label>สถานะเริ่มต้น</label><select id="roundStatus"><option>ปิด</option><option>เปิด</option></select></div></div><div class="round-modal-actions"><button id="roundSaveButton" class="btn primary" onclick="saveRoundForm()">สร้างรอบตรวจ</button><button class="btn secondary" onclick="closeRoundModal()">ยกเลิก</button></div></div></div>
+    <div class="card"><div class="section-title rounds-heading"><div><h2>รอบตรวจทั้งหมด</h2><p>รายการรอบตรวจที่สร้างไว้ เลือกเปิด–ปิดหรือดูรายงานได้ทันที</p></div></div><div id="rounds"></div></div><div id="dash" class="card dash hidden"></div></section>
+
+
+<style id="round-create-button-style">
+#inspectPanel .page-heading .round-create-top{
+  position:relative!important;width:104px!important;min-width:104px!important;max-width:104px!important;height:38px!important;min-height:38px!important;
+  padding:0!important;margin:0!important;overflow:hidden!important;display:flex!important;align-items:center!important;cursor:pointer!important;
+  border:0!important;border-radius:0!important;background:#e7f5ec!important;color:#0b6b3f!important;box-shadow:none!important;appearance:none!important;
+}
+#inspectPanel .page-heading .round-create-top .uiverse-create-text{
+  width:70px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#0b6b3f!important;
+  font-size:14px!important;font-weight:600!important;white-space:nowrap!important;transition:color .3s ease!important;
+}
+#inspectPanel .page-heading .round-create-top .uiverse-create-icon{
+  position:absolute!important;right:0!important;top:0!important;width:34px!important;height:100%!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;background:#176b3a!important;color:#fff!important;transition:width .3s ease!important;
+}
+#inspectPanel .page-heading .round-create-top .uiverse-create-icon svg{width:21px!important;height:21px!important;color:#fff!important}
+#inspectPanel .page-heading .round-create-top:hover{background:#e7f5ec!important;border:0!important}
+#inspectPanel .page-heading .round-create-top:hover .uiverse-create-text{color:transparent!important}
+#inspectPanel .page-heading .round-create-top:hover .uiverse-create-icon{width:100%!important;background:#176b3a!important}
+#inspectPanel .page-heading .round-create-top:active .uiverse-create-icon{background:#0f5930!important}
+@media(max-width:560px){#inspectPanel .page-heading .round-create-top{width:100px!important;min-width:100px!important;max-width:100px!important;height:37px!important;min-height:37px!important}#inspectPanel .page-heading .round-create-top .uiverse-create-text{width:66px!important;font-size:14px!important}}
+</style>
