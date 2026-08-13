@@ -231,7 +231,8 @@
   <footer><div><b>ตรวจสอบง่าย ครบถ้วน ถูกต้อง โปร่งใส</b><span>ระบบตรวจครุภัณฑ์ประจำปี</span></div><div><b>พบปัญหา ติดต่อ</b><span>กลุ่มบริหารทั่วไป 3040</span></div></footer>
   <script>
     const API_ENDPOINTS=[
-      'https://script.google.com/macros/s/AKfycbxhL24fozA5cuxZTWmpm8qtCMlMSVJ2q1LoomGmOJ0h4vLfx3wi6rbYEmUbH3g_MOSyQg/exec'
+      'https://script.google.com/macros/s/AKfycbwZsN4rit9A8rvsalrNS-3AkgHfCVE8x130lZj_GzeEsZwu01zVz0YbWenAfyQBlJnvxg/exec',
+      'https://script.google.com/macros/s/AKfycbx0ZGEDUtlBiO59lc0-JSm-pQV5Vo9FBiRi0WjlNqnjNpnia7Ec3o9myZ5ZYMELrbvAxA/exec'
     ];
     let preferredApiIndex=Number(sessionStorage.getItem('preferredApiIndex')||0)%API_ENDPOINTS.length;
     const $=id=>document.getElementById(id);let cfg=null,asset=null,selected=null,scanner=null,rawQr='',scanResultPending=false,pendingSaveRequestId='',pendingSaveAssetId='';
